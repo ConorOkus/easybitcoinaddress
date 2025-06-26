@@ -25,7 +25,8 @@
       "Bash(npm run generate-token:*)",
       "Bash(sudo npm install -g vercel)",
       "Bash(npx vercel:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

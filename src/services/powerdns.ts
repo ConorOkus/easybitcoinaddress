@@ -30,7 +30,13 @@ class PowerDNSService {
     this.apiUrl = config.powerdns.apiUrl;
     this.apiKey = config.powerdns.apiKey;
     this.serverId = config.powerdns.serverId;
-    this.zone = config.dns.zone;
+    this.zone = `${config.dns.recordPrefix}.${config.dns.zone}`;
+    
+    logger.info('PowerDNS Service initialized', {
+      zone: this.zone,
+      apiUrl: this.apiUrl,
+      serverId: this.serverId
+    });
     
     this.axiosInstance = axios.create({
       baseURL: `${this.apiUrl}/api/v1/servers/${this.serverId}`,
@@ -42,7 +48,7 @@ class PowerDNSService {
   }
 
   constructFQDN(name: string): string {
-    return `${name.toLowerCase()}.user.${config.dns.recordPrefix}.${this.zone}.`;
+    return `${name.toLowerCase()}.user.${this.zone}.`;
   }
 
   private normalizeFQDN(fqdn: string): string {

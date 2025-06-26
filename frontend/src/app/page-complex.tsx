@@ -32,7 +32,6 @@ export default function Home() {
       toaster.create({
         title: 'Invalid name',
         description: 'Name must be lowercase alphanumeric, max 64 characters',
-        status: 'error',
         duration: 5000,
       });
       return;
@@ -42,7 +41,6 @@ export default function Home() {
       toaster.create({
         title: 'Invalid URI',
         description: 'URI must start with "bitcoin:"',
-        status: 'error',
         duration: 5000,
       });
       return;
@@ -54,7 +52,6 @@ export default function Home() {
       toaster.create({
         title: 'Success',
         description: `Registered ${registerName}@easybitcoinaddress.me`,
-        status: 'success',
         duration: 5000,
       });
       setRegisterName('');
@@ -63,7 +60,6 @@ export default function Home() {
       toaster.create({
         title: 'Error',
         description: error.response?.data?.error || 'Failed to register name',
-        status: 'error',
         duration: 5000,
       });
     } finally {
@@ -76,7 +72,6 @@ export default function Home() {
       toaster.create({
         title: 'Invalid name',
         description: 'Name must be lowercase alphanumeric, max 64 characters',
-        status: 'error',
         duration: 5000,
       });
       return;
@@ -88,7 +83,6 @@ export default function Home() {
       toaster.create({
         title: 'Success',
         description: `Deleted ${deleteName}@easybitcoinaddress.me`,
-        status: 'success',
         duration: 5000,
       });
       setDeleteName('');
@@ -96,7 +90,6 @@ export default function Home() {
       toaster.create({
         title: 'Error',
         description: error.response?.data?.error || 'Failed to delete record',
-        status: 'error',
         duration: 5000,
       });
     } finally {

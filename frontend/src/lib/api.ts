@@ -15,12 +15,38 @@ interface RecordResponse {
 
 export const api = {
   async registerName(payload: RegisterPayload): Promise<void> {
-    await axios.post(`${API_BASE_URL}/register`, payload, {
-      headers: {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    console.log('=== API Configuration ===');
+    console.log('API_BASE_URL:', API_BASE_URL);
+    console.log('API_KEY:', API_KEY ? `${API_KEY.substring(0, 8)}...` : 'NOT SET');
+    console.log('Payload:', payload);
+    
+    const url = `${API_BASE_URL}/register`;
+    console.log('Full URL:', url);
+    
+    try {
+      const response = await axios.post(url, payload, {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('Success response:', response.status, response.data);
+    } catch (error: any) {
+      console.error('=== API Error ===');
+      console.error('Error type:', error.constructor.name);
+      console.error('Error message:', error.message);
+      console.error('Error code:', error.code);
+      
+      if (error.response) {
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', error.response.data);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+      }
+      
+      throw error;
+    }
   },
 
   async getRecord(name: string): Promise<RecordResponse> {

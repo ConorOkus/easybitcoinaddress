@@ -1,0 +1,32 @@
+# Ignore Dockerfile to force native build
+Dockerfile
+Dockerfile.backup
+
+# Frontend
+src/app/
+
+# Development files  
+.env
+.env.local
+.env.development.local
+
+# Documentation
+docs/
+README.md
+*.md
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Test files
+**/__tests__/
+**/*.test.ts
+**/*.test.js
+coverage/
+
+# Scripts
+scripts/

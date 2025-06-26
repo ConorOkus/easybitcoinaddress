@@ -1,10 +1,8 @@
 {
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "npm run railway:build"
+    "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "npm run railway:start",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",

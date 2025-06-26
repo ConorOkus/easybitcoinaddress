@@ -14,9 +14,7 @@
     "test:powerdns": "tsx src/server/api/scripts/test-powerdns-connection.ts",
     "format": "prettier --write \"**/*.{js,ts,tsx,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{js,ts,tsx,json,md,yml,yaml}\"",
-    "generate-token": "node scripts/generate-token.js",
-    "railway:build": "npm ci && npm run build",
-    "railway:start": "npm run start"
+    "generate-token": "node scripts/generate-token.js"
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['nodejs', 'npm']
+nixPkgs = ['nodejs_20']
 
 [phases.install]
 cmds = ['npm ci']
@@ -8,7 +8,7 @@ cmds = ['npm ci']
 cmds = ['npm run build']
 
 [start]
-cmd = 'npm run start'
+cmd = 'node dist/server/api/server.js'
 
 [variables]
 NODE_ENV = 'production'

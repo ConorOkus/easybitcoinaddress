@@ -17,7 +17,15 @@
       "Bash(git rm:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(true)",
+      "Bash(tree:*)",
+      "Bash(npm run format:check:*)",
+      "Bash(npm run format:*)",
+      "Bash(npm run generate-token:*)",
+      "Bash(sudo npm install -g vercel)",
+      "Bash(npx vercel:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }

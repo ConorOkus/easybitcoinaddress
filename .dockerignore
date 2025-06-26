@@ -1,14 +1,48 @@
-node_modules
-npm-debug.log
+# Node modules
+node_modules/
+npm-debug.log*
+
+# Frontend app
+src/app/
+
+# Development files
 .env
 .env.local
-.git
+.env.development.local
+
+# Git
+.git/
 .gitignore
-.DS_Store
-logs
-*.log
-.vscode
-.idea
+
+# Documentation
+docs/
 README.md
-.dockerignore
-Dockerfile
+*.md
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Test files
+**/__tests__/
+**/*.test.ts
+**/*.test.js
+coverage/
+
+# Build artifacts
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Scripts
+scripts/

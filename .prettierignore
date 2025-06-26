@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment files
+.env*
+
+# Git
+.git/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Generated files
+src/app/.next/
+src/app/out/
+
+# Third-party code
+public/

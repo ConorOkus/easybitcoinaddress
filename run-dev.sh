@@ -1,14 +1,14 @@
 #!/bin/bash
 
 echo "Starting backend server..."
-cd backend && npm run dev &
+npm run dev &
 BACKEND_PID=$!
 
 echo "Waiting for backend to start..."
 sleep 3
 
 echo "Starting frontend server..."
-cd ../frontend && npm run dev &
+cd src/app && npm run dev &
 FRONTEND_PID=$!
 
 echo "Both servers are running!"

@@ -48,8 +48,8 @@ Thumbs.db
 coverage/
 
 # Frontend specific
-frontend/.next/
-frontend/out/
+src/app/.next/
+src/app/out/
 
 # Database
 *.sqlite

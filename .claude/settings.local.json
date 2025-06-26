@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm install:*)",
+      "Bash(npm test)",
+      "Bash(npm run test:coverage:*)",
+      "Bash(find:*)",
+      "Bash(rm:*)",
+      "Bash(npm test:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm run dev:*)",
+      "Bash(chmod:*)",
+      "Bash(npx tsc:*)"
+    ],
+    "deny": []
+  }
+}

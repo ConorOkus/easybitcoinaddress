@@ -26,7 +26,8 @@
       "Bash(sudo npm install -g vercel)",
       "Bash(npx vercel:*)",
       "Bash(npm run build:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(kill:*)"
     ],
     "deny": []
   }

@@ -46,8 +46,8 @@ app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-const server = app.listen(config.port, () => {
-  logger.info(`BIP353 API server started on port ${config.port}`);
+const server = app.listen(config.port, '0.0.0.0', () => {
+  logger.info(`BIP353 API server started on 0.0.0.0:${config.port}`);
 });
 
 process.on('SIGTERM', () => {

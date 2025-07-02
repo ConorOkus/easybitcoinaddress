@@ -167,9 +167,9 @@ export default function Home() {
         <Box textAlign="center" mt={4}>
           <Text fontSize="sm" color="fg.muted">
             Want to check or resolve your name?{' '}
-            <Text as="a" href="https://satsto.me/" target="_blank" rel="noopener noreferrer" color="blue.500" textDecoration="underline">
+            <a href="https://satsto.me/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--chakra-colors-blue-500)', textDecoration: 'underline' }}>
               Visit satsto.me
-            </Text>
+            </a>
           </Text>
         </Box>
       </Stack>

@@ -64,9 +64,9 @@ export default function Home() {
   return (
     <Container maxW="md" py={10}>
       <Stack gap={8} align="center">
-        <Heading size="xl">Easy Bitcoin Address Registry</Heading>
+        <Heading size="xl">Easy ₿itcoin Address Registry</Heading>
         <Text color="fg.muted" textAlign="center">
-          Register BIP353-compatible names like <Code>username@easybitcoinaddress.me</Code>
+          Register BIP353-compatible names like <Code>₿username@easybitcoinaddress.me</Code>
         </Text>
 
         <Box 

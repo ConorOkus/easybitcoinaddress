@@ -7,14 +7,14 @@ import { api } from '@/lib/api';
 
 export default function Home() {
   const [registerName, setRegisterName] = useState('');
-  const [registerUri, setRegisterUri] = useState('');
+  const [bolt12Offer, setBolt12Offer] = useState('');
   const [deleteName, setDeleteName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'register' | 'delete'>('register');
+  // const [activeTab, setActiveTab] = useState<'register' | 'delete'>('register');
 
   const nameRegex = /^[a-z0-9]+$/;
   const isNameValid = (name: string) => nameRegex.test(name) && name.length <= 64;
-  const isUriValid = (uri: string) => uri.startsWith('bitcoin:');
+  const isBolt12Valid = (offer: string) => offer.startsWith('lno1');
 
   const handleRegister = async () => {
     if (!isNameValid(registerName)) {
@@ -27,10 +27,10 @@ export default function Home() {
       return;
     }
 
-    if (!isUriValid(registerUri)) {
+    if (!isBolt12Valid(bolt12Offer)) {
       toaster.create({
-        title: 'Invalid URI',
-        description: 'URI must start with "bitcoin:"',
+        title: 'Invalid BOLT 12 Offer',
+        description: 'BOLT 12 offer must start with "lno1"',
         type: 'error',
         duration: 5000,
       });
@@ -39,7 +39,8 @@ export default function Home() {
 
     setIsLoading(true);
     try {
-      await api.registerName({ name: registerName, uri: registerUri });
+      const bitcoinUri = `bitcoin:?lno=${bolt12Offer}`;
+      await api.registerName({ name: registerName, uri: bitcoinUri });
       toaster.create({
         title: 'Success',
         description: `Registered ${registerName}@easybitcoinaddress.me`,
@@ -47,7 +48,7 @@ export default function Home() {
         duration: 5000,
       });
       setRegisterName('');
-      setRegisterUri('');
+      setBolt12Offer('');
     } catch (error: any) {
       toaster.create({
         title: 'Error',
@@ -101,34 +102,28 @@ export default function Home() {
           Register BIP353-compatible names like <Code>username@easybitcoinaddress.me</Code>
         </Text>
 
-        <Box width="100%" bg="bg.panel" borderRadius="lg" p={6} borderWidth="1px">
-          <Stack gap={2} mb={6}>
-            <Box display="flex" gap={2}>
-              <Button
-                variant={activeTab === 'register' ? 'solid' : 'outline'}
-                onClick={() => setActiveTab('register')}
-                size="sm"
-              >
-                Register Name
-              </Button>
-              <Button
-                variant={activeTab === 'delete' ? 'solid' : 'outline'}
-                onClick={() => setActiveTab('delete')}
-                size="sm"
-              >
-                Delete Name
-              </Button>
-            </Box>
-          </Stack>
+        <Box 
+          width="100%" 
+          bg="orange.50" 
+          borderColor="orange.200" 
+          borderWidth="1px" 
+          borderRadius="md" 
+          p={4}
+        >
+          <Text color="orange.800">
+            <Text as="span" fontWeight="bold">Warning:</Text> This is a testing instance, data may be lost at any time. Use at your own risk!
+          </Text>
+        </Box>
 
-          {activeTab === 'register' && (
-            <Stack gap={4}>
+        <Box width="100%" bg="bg.panel" borderRadius="lg" p={6} borderWidth="1px">
+
+          <Stack gap={4}>
               <Box>
                 <Text mb={2} fontWeight="medium">
                   Name *
                 </Text>
                 <Input
-                  placeholder="conor"
+                  placeholder="bob"
                   value={registerName}
                   onChange={(e) => setRegisterName(e.target.value.toLowerCase())}
                   disabled={isLoading}
@@ -142,17 +137,17 @@ export default function Home() {
 
               <Box>
                 <Text mb={2} fontWeight="medium">
-                  Bitcoin URI *
+                  BOLT 12 Offer *
                 </Text>
                 <Input
-                  placeholder="bitcoin:bc1qexample..."
-                  value={registerUri}
-                  onChange={(e) => setRegisterUri(e.target.value)}
+                  placeholder="lno1qgsqvgnwgcg35z6ee2h3yczraddm72xrfua9uve2rlrm9deu7xyfzrcgqgn3qzsyvfkx26qkyypwa3cf24sm78dzrutkpdswp6kazq4p6vud0pffn7mnn7el4p8d7z95nttdxvp9y9e59nwvjsw8vxgqqrwxfuv2t80hvv4hzqkd4ll2fhfhrx2ynv4zt7v2fwfyzzn4z"
+                  value={bolt12Offer}
+                  onChange={(e) => setBolt12Offer(e.target.value)}
                   disabled={isLoading}
                 />
-                {registerUri && !isUriValid(registerUri) && (
+                {bolt12Offer && !isBolt12Valid(bolt12Offer) && (
                   <Text color="fg.error" fontSize="sm" mt={1}>
-                    URI must start with "bitcoin:"
+                    BOLT 12 offer must start with "lno1"
                   </Text>
                 )}
               </Box>
@@ -162,43 +157,20 @@ export default function Home() {
                 width="100%"
                 onClick={handleRegister}
                 loading={isLoading}
-                disabled={!registerName || !registerUri}
+                disabled={!registerName || !bolt12Offer}
               >
                 Register Name
               </Button>
             </Stack>
-          )}
+        </Box>
 
-          {activeTab === 'delete' && (
-            <Stack gap={4}>
-              <Box>
-                <Text mb={2} fontWeight="medium">
-                  Name to Delete *
-                </Text>
-                <Input
-                  placeholder="conor"
-                  value={deleteName}
-                  onChange={(e) => setDeleteName(e.target.value.toLowerCase())}
-                  disabled={isLoading}
-                />
-                {deleteName && !isNameValid(deleteName) && (
-                  <Text color="fg.error" fontSize="sm" mt={1}>
-                    Name must be lowercase alphanumeric, max 64 characters
-                  </Text>
-                )}
-              </Box>
-
-              <Button
-                colorPalette="red"
-                width="100%"
-                onClick={handleDelete}
-                loading={isLoading}
-                disabled={!deleteName}
-              >
-                Delete Name
-              </Button>
-            </Stack>
-          )}
+        <Box textAlign="center" mt={4}>
+          <Text fontSize="sm" color="fg.muted">
+            Want to check or resolve your name?{' '}
+            <Text as="a" href="https://satsto.me/" target="_blank" rel="noopener noreferrer" color="blue.500" textDecoration="underline">
+              Visit satsto.me
+            </Text>
+          </Text>
         </Box>
       </Stack>
     </Container>

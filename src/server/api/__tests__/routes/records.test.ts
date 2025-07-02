@@ -25,6 +25,11 @@ jest.mock('../../config/logger', () => ({
   },
 }));
 
+// Mock the environment validation
+jest.mock('../../config/env-validation', () => ({
+  validateEnvironment: jest.fn(),
+}));
+
 const mockPowerDNS = powerdns as jest.Mocked<typeof powerdns>;
 
 const app = express();
@@ -152,11 +157,186 @@ describe('Records Routes', () => {
       expect(response.body.details).toContain('bitcoin');
     });
 
+    it('should accept valid BOLT 12 offer URI', async () => {
+      const bolt12Uri = 'bitcoin:?lno=lno1qgsqvgnwgcg35z6ee2h3yczraddm72xrfua9uve2rlrm9deu7xyfzrcgqgn3qzsyvfkx26qkyypwa3cf24sm78dzrutkpdswp6kazq4p6';
+      const mockResponse: RecordResponse = {
+        fqdn: 'bob.user._bitcoin-payment.easybitcoinaddress.me.',
+        uri: bolt12Uri,
+      };
+
+      mockPowerDNS.getTXTRecord.mockResolvedValueOnce(null);
+      mockPowerDNS.addTXTRecord.mockResolvedValueOnce(mockResponse);
+
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: 'bob',
+          uri: bolt12Uri,
+        });
+
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual({
+        message: 'Name registered successfully',
+        fqdn: mockResponse.fqdn,
+        uri: mockResponse.uri,
+      });
+    });
+
+    it('should return 400 for invalid BOLT 12 offer format', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: 'bob',
+          uri: 'bitcoin:?lno=invalid-bolt12-offer',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+      expect(response.body.details).toContain('lno1');
+    });
+
+    it('should return 400 for malformed BOLT 12 URI', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: 'bob',
+          uri: 'bitcoin:?lno=',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+      expect(response.body.details).toContain('lno1');
+    });
+
     it('should return 400 for missing fields', async () => {
       const response = await request(app)
         .post('/register')
         .set('Authorization', `Bearer ${validAuthToken}`)
         .send({});
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+    });
+
+    // Additional edge case and security tests
+    it('should return 400 for empty string fields', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: '',
+          uri: '',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+    });
+
+    it('should return 400 for whitespace-only name', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: '   ',
+          uri: 'bitcoin:bc1qexample...',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+    });
+
+    it('should return 400 for uppercase characters in name', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: 'Bob',
+          uri: 'bitcoin:bc1qexample...',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+      expect(response.body.details).toContain('lowercase');
+    });
+
+    it('should return 400 for special characters in name', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: 'bob@test',
+          uri: 'bitcoin:bc1qexample...',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+      expect(response.body.details).toContain('lowercase');
+    });
+
+    it('should return 400 for SQL injection attempt in name', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: "'; DROP TABLE records; --",
+          uri: 'bitcoin:bc1qexample...',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+    });
+
+    it('should return 400 for XSS attempt in name', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: '<script>alert("xss")</script>',
+          uri: 'bitcoin:bc1qexample...',
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+    });
+
+    it('should handle very long URI gracefully', async () => {
+      const longUri = 'bitcoin:' + 'a'.repeat(10000);
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: 'bob',
+          uri: longUri,
+        });
+
+      // Should either accept it or fail validation, but not crash
+      expect([200, 201, 400, 413]).toContain(response.status);
+    });
+
+    it('should return 400 for null values', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: null,
+          uri: null,
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation error');
+    });
+
+    it('should return 400 for non-string values', async () => {
+      const response = await request(app)
+        .post('/register')
+        .set('Authorization', `Bearer ${validAuthToken}`)
+        .send({
+          name: 123,
+          uri: { invalid: 'object' },
+        });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Validation error');

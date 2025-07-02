@@ -8,7 +8,6 @@ import { api } from '@/lib/api';
 export default function Home() {
   const [registerName, setRegisterName] = useState('');
   const [bolt12Offer, setBolt12Offer] = useState('');
-  const [deleteName, setDeleteName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   // const [activeTab, setActiveTab] = useState<'register' | 'delete'>('register');
 
@@ -61,38 +60,6 @@ export default function Home() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!isNameValid(deleteName)) {
-      toaster.create({
-        title: 'Invalid name',
-        description: 'Name must be lowercase alphanumeric, max 64 characters',
-        type: 'error',
-        duration: 5000,
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      await api.deleteRecord(deleteName);
-      toaster.create({
-        title: 'Success',
-        description: `Deleted ${deleteName}@easybitcoinaddress.me`,
-        type: 'success',
-        duration: 5000,
-      });
-      setDeleteName('');
-    } catch (error: any) {
-      toaster.create({
-        title: 'Error',
-        description: error.response?.data?.error || 'Failed to delete record',
-        type: 'error',
-        duration: 5000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Container maxW="md" py={10}>
@@ -169,6 +136,14 @@ export default function Home() {
             Want to check or resolve your name?{' '}
             <a href="https://satsto.me/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--chakra-colors-blue-500)', textDecoration: 'underline' }}>
               Visit satsto.me
+            </a>
+          </Text>
+        </Box>
+
+        <Box textAlign="center" mt={8} pt={4} borderTop="1px" borderColor="border.subtle">
+          <Text fontSize="xs" color="fg.muted">
+            <a href="https://github.com/conorokus/easybitcoinaddress" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--chakra-colors-gray-500)', textDecoration: 'underline' }}>
+              View source code on GitHub
             </a>
           </Text>
         </Box>

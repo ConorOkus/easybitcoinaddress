@@ -1,4 +1,4 @@
-# Easy Bitcoin Address - BIP353 Name Registry
+# Easy Bitcoin Address Server - BIP353 Name Registry
 
 A simple service that allows users to register human-readable Bitcoin payment addresses using the BIP353 standard. Users can register addresses like `alice@easybitcoinaddress.me` that resolve to Bitcoin payment URIs.
 

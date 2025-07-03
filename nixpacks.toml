@@ -2,10 +2,10 @@
 nixPkgs = ['nodejs_20']
 
 [phases.install]
-cmds = ['npm ci --include=dev']
+cmds = ['npm ci']
 
 [phases.build]
-cmds = ['npm run build', 'npm prune --omit=dev']
+cmds = ['npm run build', 'npm prune --production']
 
 [start]
 cmd = 'node dist/server/api/server.js'

@@ -5,13 +5,11 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 if (!API_BASE_URL) {
-  console.error('NEXT_PUBLIC_API_URL environment variable is not set');
-  console.error('Please check your .env.local file');
+  throw new Error('NEXT_PUBLIC_API_URL environment variable is not set');
 }
 
 if (!API_KEY) {
-  console.error('NEXT_PUBLIC_API_KEY environment variable is not set');
-  console.error('Please check your .env.local file');
+  throw new Error('NEXT_PUBLIC_API_KEY environment variable is not set');
 }
 
 // Use defaults if not set (for development)
@@ -30,13 +28,7 @@ interface RecordResponse {
 
 export const api = {
   async registerName(payload: RegisterPayload): Promise<void> {
-    console.log('=== API Configuration ===');
-    console.log('API_BASE_URL:', baseUrl);
-    console.log('API_KEY:', apiKey ? `${apiKey.substring(0, 8)}...` : 'NOT SET');
-    console.log('Payload:', payload);
-
     const url = `${baseUrl}/register`;
-    console.log('Full URL:', url);
 
     try {
       const response = await axios.post(url, payload, {
@@ -45,20 +37,7 @@ export const api = {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Success response:', response.status, response.data);
     } catch (error: any) {
-      console.error('=== API Error ===');
-      console.error('Error type:', error.constructor.name);
-      console.error('Error message:', error.message);
-      console.error('Error code:', error.code);
-
-      if (error.response) {
-        console.error('Response status:', error.response.status);
-        console.error('Response data:', error.response.data);
-        console.error('Response headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('No response received:', error.request);
-      }
 
       throw error;
     }

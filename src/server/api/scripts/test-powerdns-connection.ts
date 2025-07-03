@@ -15,9 +15,9 @@ async function testPowerDNSConnection(): Promise<void> {
 
   console.log('🔍 PowerDNS Connection Diagnostics\n');
   console.log(`Configuration:`);
-  console.log(`  API URL: ${config.powerdns.apiUrl}`);
-  console.log(`  Server ID: ${config.powerdns.serverId}`);
-  console.log(`  DNS Zone: ${config.dns.zone}`);
+  console.log(`  API URL: [CONFIGURED]`);
+  console.log(`  Server ID: [CONFIGURED]`);
+  console.log(`  DNS Zone: [CONFIGURED]`);
   console.log(`  DNS TTL: ${config.dns.ttl}`);
   console.log(`  API Key: ${config.powerdns.apiKey ? '***SET***' : '***NOT SET***'}\n`);
 

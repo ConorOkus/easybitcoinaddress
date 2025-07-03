@@ -6,7 +6,6 @@ import {
   Heading,
   Input,
   Button,
-  Tabs,
   Text,
   Code,
   Stack,
@@ -20,7 +19,6 @@ import { api } from '@/lib/api';
 export default function Home() {
   const [registerName, setRegisterName] = useState('');
   const [registerUri, setRegisterUri] = useState('');
-  const [deleteName, setDeleteName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const nameRegex = /^[a-z0-9]+$/;
@@ -67,35 +65,6 @@ export default function Home() {
     }
   };
 
-  const handleDelete = async () => {
-    if (!isNameValid(deleteName)) {
-      toaster.create({
-        title: 'Invalid name',
-        description: 'Name must be lowercase alphanumeric, max 64 characters',
-        duration: 5000,
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      await api.deleteRecord(deleteName);
-      toaster.create({
-        title: 'Success',
-        description: `Deleted ${deleteName}@easybitcoinaddress.me`,
-        duration: 5000,
-      });
-      setDeleteName('');
-    } catch (error: any) {
-      toaster.create({
-        title: 'Error',
-        description: error.response?.data?.error || 'Failed to delete record',
-        duration: 5000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Container maxW="container.md" py={10}>
@@ -107,14 +76,8 @@ export default function Home() {
 
         <Card.Root width="100%">
           <Card.Body>
-            <Tabs.Root defaultValue="register">
-              <Tabs.List>
-                <Tabs.Trigger value="register">Register Name</Tabs.Trigger>
-                <Tabs.Trigger value="delete">Delete Name</Tabs.Trigger>
-              </Tabs.List>
-
-              <Box pt={6}>
-                <Tabs.Content value="register">
+            <Box pt={6}>
+              <Stack gap={4}>
                   <Stack gap={4}>
                     <Field.Root
                       invalid={registerName ? !isNameValid(registerName) : false}
@@ -157,38 +120,8 @@ export default function Home() {
                       Register Name
                     </Button>
                   </Stack>
-                </Tabs.Content>
-
-                <Tabs.Content value="delete">
-                  <Stack gap={4}>
-                    <Field.Root invalid={deleteName ? !isNameValid(deleteName) : false} required>
-                      <Field.Label>Name to Delete</Field.Label>
-                      <Input
-                        placeholder="conor"
-                        value={deleteName}
-                        onChange={(e) => setDeleteName(e.target.value.toLowerCase())}
-                        disabled={isLoading}
-                      />
-                      {deleteName && !isNameValid(deleteName) && (
-                        <Field.ErrorText>
-                          Name must be lowercase alphanumeric, max 64 characters
-                        </Field.ErrorText>
-                      )}
-                    </Field.Root>
-
-                    <Button
-                      colorPalette="red"
-                      width="100%"
-                      onClick={handleDelete}
-                      loading={isLoading}
-                      disabled={!deleteName}
-                    >
-                      Delete Name
-                    </Button>
-                  </Stack>
-                </Tabs.Content>
-              </Box>
-            </Tabs.Root>
+              </Stack>
+            </Box>
           </Card.Body>
         </Card.Root>
       </Stack>

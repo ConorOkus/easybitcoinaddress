@@ -47,12 +47,4 @@ export const api = {
     const response = await axios.get<RecordResponse>(`${baseUrl}/record/${name}`);
     return response.data;
   },
-
-  async deleteRecord(name: string): Promise<void> {
-    await axios.delete(`${baseUrl}/record/${name}`, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
-  },
 };

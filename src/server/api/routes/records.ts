@@ -69,42 +69,4 @@ router.get('/record/:name', async (req: Request<{ name: string }>, res: Response
   }
 });
 
-router.delete(
-  '/record/:name',
-  authenticate,
-  async (req: Request<{ name: string }>, res: Response) => {
-    const { name } = req.params;
-
-    const { error } = validators.name.validate(name);
-    if (error) {
-      res.status(400).json({
-        error: 'Invalid name format',
-        details: error.details[0].message,
-      });
-      return;
-    }
-
-    try {
-      const record = await powerdns.getTXTRecord(name);
-
-      if (!record) {
-        res.status(404).json({ error: 'Record not found' });
-        return;
-      }
-
-      await powerdns.deleteTXTRecord(name);
-      logger.info('Name deleted', { name, fqdn: record.fqdn });
-
-      res.json({
-        message: 'Record deleted successfully',
-        fqdn: record.fqdn,
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      logger.error('Failed to delete record', { name, error: message });
-      res.status(500).json({ error: message });
-    }
-  }
-);
-
 export default router;

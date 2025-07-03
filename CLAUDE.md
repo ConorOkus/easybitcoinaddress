@@ -37,11 +37,6 @@ DNSSEC-validated TXT records.
   }
   ```
 
-### 2.3. Delete a Record
-
-- **Endpoint:** `DELETE /record/:name`
-- **Behavior:** Removes the TXT record if it exists (API or DB)
-- **Response:** `200 OK` or `404 Not Found`
 
 ## 3. Technical Requirements
 

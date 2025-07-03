@@ -246,42 +246,4 @@ describe('PowerDNS Service', () => {
       await expect(powerdns.getTXTRecord('conor')).rejects.toThrow('Failed to get DNS record');
     });
   });
-
-  describe('deleteTXTRecord', () => {
-    it('should delete a TXT record successfully', async () => {
-      const name = 'conor';
-      const fqdn = 'conor.user._bitcoin-payment.easybitcoinaddress.me.';
-
-      mockAxiosInstance.patch.mockResolvedValue({ status: 200 });
-
-      const result = await powerdns.deleteTXTRecord(name);
-
-      expect(result).toBe(true);
-      expect(mockAxiosInstance.patch).toHaveBeenCalledWith('/zones/easybitcoinaddress.me', {
-        rrsets: [
-          {
-            name: fqdn,
-            type: 'TXT',
-            changetype: 'DELETE',
-          },
-        ],
-      });
-    });
-
-    it('should handle API errors when deleting record', async () => {
-      mockAxiosInstance.patch.mockRejectedValue(new Error('Request failed with status code 500'));
-
-      await expect(powerdns.deleteTXTRecord('conor')).rejects.toThrow(
-        'Failed to delete DNS record'
-      );
-    });
-
-    it('should handle network errors when deleting record', async () => {
-      mockAxiosInstance.patch.mockRejectedValue(new Error('Network Error'));
-
-      await expect(powerdns.deleteTXTRecord('conor')).rejects.toThrow(
-        'Failed to delete DNS record'
-      );
-    });
-  });
 });

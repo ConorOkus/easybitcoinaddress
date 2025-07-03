@@ -53,11 +53,6 @@ POST /register
 GET /record/alice
 ```
 
-### Delete a Name
-
-```bash
-DELETE /record/alice
-```
 
 ## Development
 

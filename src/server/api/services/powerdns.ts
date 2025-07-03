@@ -120,31 +120,6 @@ class PowerDNSService {
       throw new Error(`Failed to get DNS record: ${message}`);
     }
   }
-
-  async deleteTXTRecord(name: string): Promise<boolean> {
-    const fqdn = this.constructFQDN(name);
-
-    try {
-      const rrsets = {
-        rrsets: [
-          {
-            name: fqdn,
-            type: 'TXT',
-            changetype: 'DELETE',
-          },
-        ],
-      };
-
-      await this.axiosInstance.patch(`/zones/${this.zone}`, rrsets);
-      logger.info(`Deleted TXT record for ${fqdn}`);
-
-      return true;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      logger.error('Failed to delete TXT record', { error: message, fqdn });
-      throw new Error(`Failed to delete DNS record: ${message}`);
-    }
-  }
 }
 
 export default new PowerDNSService();

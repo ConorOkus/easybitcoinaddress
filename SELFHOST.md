@@ -112,12 +112,6 @@ curl -X POST http://localhost:3000/register \
 curl http://localhost:3000/record/alice
 ```
 
-### Delete a Name
-
-```bash
-curl -X DELETE http://localhost:3000/record/alice \
-  -H "Authorization: Bearer YOUR_AUTH_TOKEN"
-```
 
 ## Security Considerations
 

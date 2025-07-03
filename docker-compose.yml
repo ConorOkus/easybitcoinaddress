@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # PowerDNS Authoritative Server
+  powerdns:
+    image: powerdns/pdns-auth-48:latest
+    container_name: powerdns
+    environment:
+      - PDNS_AUTH_API=yes
+      - PDNS_AUTH_API_KEY=${POWERDNS_API_KEY:-changeme123456789}
+      - PDNS_AUTH_WEBSERVER=yes
+      - PDNS_AUTH_WEBSERVER_ADDRESS=0.0.0.0
+      - PDNS_AUTH_WEBSERVER_ALLOW_FROM=0.0.0.0/0
+      - PDNS_AUTH_WEBSERVER_PORT=8081
+      - PDNS_AUTH_LAUNCH=gsqlite3
+      - PDNS_AUTH_GSQLITE3_DATABASE=/var/lib/powerdns/pdns.sqlite3
+      - PDNS_AUTH_GSQLITE3_DNSSEC=yes
+    volumes:
+      - powerdns_data:/var/lib/powerdns
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8081:8081"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pdns_control", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # BIP353 Name Registry API
+  bip353-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bip353-api
+    environment:
+      # Required environment variables
+      - POWERDNS_API_URL=http://powerdns:8081/api/v1
+      - POWERDNS_API_KEY=${POWERDNS_API_KEY:-changeme123456789}
+      - AUTH_TOKEN=${AUTH_TOKEN:-changeme1234567890changeme1234567890}
+      
+      # Optional configuration
+      - POWERDNS_SERVER_ID=${POWERDNS_SERVER_ID:-localhost}
+      - DNS_ZONE=${DNS_ZONE:-easybitcoinaddress.me}
+      - DNS_TTL=${DNS_TTL:-300}
+      - PORT=${PORT:-3000}
+      - NODE_ENV=${NODE_ENV:-production}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    ports:
+      - "${API_PORT:-3000}:3000"
+    depends_on:
+      powerdns:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  powerdns_data:
